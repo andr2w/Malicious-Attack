@@ -20,10 +20,10 @@ def return_data(data_path):
     The Train_test_split don't work as i wished, the y label is not correct
     Let me first do some test.
     '''
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=100, shuffle=True)
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=100, shuffle=True)
 
-    return X_train, X_test, y_train, y_test
-
+    # return X_train, X_test, y_train, y_test
+    return X, y
 
 def count_corpus(X):
     tokens = [token for data_sample in X for token in data_sample]
@@ -102,16 +102,16 @@ def load_array(data_arrays, batch_size, is_train=True):
     return data.DataLoader(dataset, batch_size, shuffle=is_train)
 
 
-def build_iterator(X_train, X_test, y_train, y_test, vocab, config):
+def build_iterator(X_train, y_train, vocab, config):
     
     train_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_train])
-    test_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_test])
+    # test_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_test])
 
 
-    train_iter = load_array((train_features, torch.tensor(y_train.values)), config.batch_size)
-    test_iter = load_array((test_features, torch.tensor(y_test.values)), config.batch_size, is_train=False)
+    train_iter = load_array((train_features, torch.LongTensor(y_train.values)), config.batch_size)
+    # test_iter = load_array((test_features, torch.LongTensor(y_test.values)), config.batch_size, is_train=False)
     
-    return train_iter, test_iter
+    return train_iter
 
 
 class TokenEmbedding:

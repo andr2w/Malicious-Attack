@@ -1,5 +1,6 @@
 import re
-
+import torch
+import matplotlib.pyplot as plt
 
 
 def clean_text(text):
@@ -39,5 +40,37 @@ def change_label(label):
         label = 1
     
     return label
+
+def try_all_gpus():
+    devices = [torch.device(f'cuda:{i}')
+               for i in range(torch.cuda.device_count())]
+    return devices if devices else [torch.device('cpu')]
+
+def compute_accuracy(y_hat, y):
+    _, predict = torch.max(y_hat.data, 1)
+    total = y.size(0)
+    true = (predict == y).sum().item()
+    acc = true / total
+
+    print('Total: ', total)
+    print('true: ', true)
+    print('----------------------------------')
+    return acc
+
+def plot_acc_loss(loss_list, acc_list):
+    x_1 = range(1, len(loss_list) + 1)
+    x_2 = range(1, len(acc_list) + 1)
+
+    plt.figure(figsize=(12, 5))
+    
+    plt.subplot(1, 2, 1)
+    plt.plot(x_1, loss_list)
+    plt.title('Training Loss')
+    
+    plt.subplot(1, 2, 2)
+    plt.plot(x_2, acc_list)
+    plt.title('Training Accuracy')
+
+    plt.show()
 
     
