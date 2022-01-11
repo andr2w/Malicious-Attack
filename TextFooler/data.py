@@ -1,9 +1,10 @@
+from re import I
 import pandas as pd
 import util as ut
-from sklearn.model_selection import train_test_split
 import collections
 import torch
 from torch.utils import data
+from sklearn.model_selection import train_test_split
 
 
 def return_data(data_path):
@@ -15,9 +16,13 @@ def return_data(data_path):
     X = X.apply(lambda x: x.split())
     y = y.apply(lambda x: ut.change_label(x))
 
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=100) 
-    # return X_train, X_test, y_train, y_test
-    return X, y
+    '''
+    The Train_test_split don't work as i wished, the y label is not correct
+    Let me first do some test.
+    '''
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=100, shuffle=True)
+
+    return X_train, X_test, y_train, y_test
 
 
 def count_corpus(X):
@@ -98,24 +103,15 @@ def load_array(data_arrays, batch_size, is_train=True):
 
 
 def dataloader(config):
-    # X_train, X_test, y_train, y_test = return_data(config.data_path)
-    X, y  = return_data(config.data_path)
-    vocab = Vocab(X, min_freq=config.min_freq, reserved_tokens=['<pad>'])
-    train_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X]) 
-    # train_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_train])
-    # test_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_test])
-
-    # print(train_features)
-
-    # y_train = torch.tensor(y_train.to_list())
-    # y_test = torch.tensor(y_test.to_list())
-    # print(y_train)
+    X_train, X_test, y_train, y_test = return_data(config.data_path)
+    vocab = Vocab(X_train, min_freq=config.min_freq, reserved_tokens=['<pad>'])
+    train_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_train])
+    test_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_test])
 
 
-    train_iter = load_array((train_features, torch.tensor(y)), config.batch_size)
-    # test_iter = load_array((test_features, y_train), config.batch_size, is_train=False)
+    train_iter = load_array((train_features, torch.tensor(y_train.values)), config.batch_size)
+    test_iter = load_array((test_features, torch.tensor(y_test.values)), config.batch_size, is_train=False)
     
-    # return train_iter, test_iter
-    return train_iter
+    return train_iter, test_iter
         
 
