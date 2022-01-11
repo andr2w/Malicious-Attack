@@ -102,10 +102,8 @@ def load_array(data_arrays, batch_size, is_train=True):
     return data.DataLoader(dataset, batch_size, shuffle=is_train)
 
 
-def dataloader(config):
-    X_train, X_test, y_train, y_test = return_data(config.data_path)
-    vocab = Vocab(X_train, min_freq=config.min_freq, reserved_tokens=['<pad>'])
-    print('The vocab size is :', len(vocab))
+def build_iterator(X_train, X_test, y_train, y_test, vocab, config):
+    
     train_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_train])
     test_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_test])
 
@@ -114,5 +112,41 @@ def dataloader(config):
     test_iter = load_array((test_features, torch.tensor(y_test.values)), config.batch_size, is_train=False)
     
     return train_iter, test_iter
+
+
+class TokenEmbedding:
+    def __init__(self, embedding_path):
+        '''
+        We need to creat three things:
+        1. idx_to_token: List()
+        2. token_to_idx: Dict()
+        3. idx_to_vec: List()
+        '''
+        self.idx_to_token, self.idx_to_vec = self._load_embedding(embedding_path)
+        self.unknown_idx = 0
+        self.token_to_idx = {}
+
+    def _load_embedding(self, embedding_path):
+        idx_to_token, idx_to_vec = ['<unk>'], []
+        with open(embedding_path, 'r') as f:
+            for line in f:
+                elems = line.rstrip().split(' ')
+                token, elems = elems[0], [float(elem) for elem in elems[1:]]
+                if len(elems) > 1:
+                    idx_to_token.append(token)
+                    idx_to_vec.append(elems)
+
+        idx_to_vec = [[0] * len(idx_to_vec[0])] + idx_to_vec
+        return idx_to_token, torch.tensor(idx_to_vec)
+
+    def __getitem__(self, tokens):
+        indices = [self.token_to_idx.get(token, self.unknown_idx)
+                   for token in tokens]
+        vecs = self.idx_to_vec[torch.tensor(indices)]
+        return vecs
+
+    def __len__(self):
+        return len(self.idx_to_token) 
+
         
 
