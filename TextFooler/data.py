@@ -105,6 +105,7 @@ def load_array(data_arrays, batch_size, is_train=True):
 def dataloader(config):
     X_train, X_test, y_train, y_test = return_data(config.data_path)
     vocab = Vocab(X_train, min_freq=config.min_freq, reserved_tokens=['<pad>'])
+    print('The vocab size is :', len(vocab))
     train_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_train])
     test_features = torch.tensor([truncate_pad(vocab[data_sample], config.pad_length, vocab['<pad>']) for data_sample in X_test])
 
