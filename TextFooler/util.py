@@ -52,9 +52,6 @@ def compute_accuracy(y_hat, y):
     true = (predict == y).sum().item()
     acc = true / total
 
-    print('Total: ', total)
-    print('true: ', true)
-    print('----------------------------------')
     return acc
 
 def plot_acc_loss(loss_list, acc_list):

@@ -1,7 +1,5 @@
 Pheme/.ipynb_checkpoints
-Pheme/all-rnr-annotated-threads
-Pheme/data.csv
-
+TextFooler/model.ckpt
 .ipynb_checkpoints
 
-TextFooler/data.csv
+*.ckpt
