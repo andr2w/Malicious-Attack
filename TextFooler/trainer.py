@@ -29,6 +29,8 @@ def train(train_iter, net, optimizer, loss_function, config, devices=ut.try_all_
             # Update the model's parameters
             optimizer.step()
 
+            torch.nn.utils.clip_grad_norm(net.parameters(), max_norm=1)
+
             # update progress bar 
             loop.set_description('[{}/{}]'.format(epoch + 1, config.num_epochs))
             train_acc = ut.compute_accuracy(y_hat, y)
@@ -43,7 +45,7 @@ def test(test_iter, net, config, devices=ut.try_all_gpus()):
     net = nn.DataParallel(net, device_ids = devices).to(devices[0])
     net.load_state_dict(torch.load(config.saved_path), strict=False)
     net.eval()
-    with torch.no_grad:
+    with torch.no_grad():
         true = 0
         total = 0 
         loop = tqdm(test_iter, total=len(test_iter), leave=False)

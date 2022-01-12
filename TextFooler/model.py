@@ -4,7 +4,7 @@ import torch
 class Config:
     def __init__(self):
         self.data_path = 'Pheme.csv'
-        self.batch_size = 16
+        self.batch_size = 64
         self.min_freq = 0
         self.pad_length = 80
         self.embedding_path = '../../Glove_Twitter_wordVec/glove.twitter.27B.200d.txt'
@@ -14,7 +14,7 @@ class Config:
         self.num_classes = 2
         self.num_epochs = 10
         self.learning_rate = 1e-5
-        self.saved_path = 'model.ckpt'
+        self.saved_path = 'model2.ckpt'
 
         '''
         embedding:
