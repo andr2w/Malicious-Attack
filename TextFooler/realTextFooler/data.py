@@ -1,5 +1,5 @@
 import re
-
+from torch.utils.data import Dataset
 
 def clean_str(string, TREC=False):
     """
@@ -36,7 +36,8 @@ def read_data(path):
             X = clean_str(X.strip())            
             # lower the word 
             X = X.lower() 
-            features.append(X.split())
+            
+            features.append(X)
             labels.append(y)
         
 
@@ -45,4 +46,32 @@ def read_data(path):
 
 
 
+def FakeDataset():
+    def __init__(self, X, y, tokenizer, max_len):
+        self.tokenizer = tokenizer
+        self.X = X
+        self.y = y
+        self.max_len = max_len
 
+    def __len__(self):
+        return len(self.X)
+
+    def __getitem__(self, index):
+        X = str(self.X[index])
+        X = " ".join(X.split())
+
+        inputs = self.tokenizer.encode_plus(
+            X,
+            None, 
+            add_special_tokens = True,
+            max_length = self.max_len,
+            pad_to_max_length = True,
+            return_token_type_ids = True
+        )
+
+        return inputs
+
+
+def build_vocab(data_path, tokenizer, max_len):
+    X, y  = read_data(data_path)
+    return FakeDataset(X, y, tokenizer, max_len) 

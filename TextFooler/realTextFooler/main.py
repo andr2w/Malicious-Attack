@@ -1,4 +1,12 @@
-from data import read_data
+import IPython
+from model import Config
+from data import build_vocab
 
-X, y = read_data('fake')
-import IPython; IPython.embed(); exit(1)
+
+def main():
+    config = Config()
+    dataset = build_vocab(config.data_path, config.tokenizer, config.max_len)
+    import IPython; IPython.embed(); exit(1)
+
+if __name__ == '__main__':
+    main()
