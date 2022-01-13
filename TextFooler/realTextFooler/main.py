@@ -1,8 +1,4 @@
 from data import read_data
 
-
-features, labels = read_data('fake')
-
-print(len(features))
-print(len(labels))
-print(features[0])
+X, y = read_data('fake')
+import IPython; IPython.embed(); exit(1)
