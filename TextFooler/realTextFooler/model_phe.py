@@ -117,3 +117,26 @@ class PhemeDataset(Dataset):
             'mask': torch.LongTensor(mask),
             'y': torch.LongTensor([y])
         }
+
+
+def build_vocab(X_train, X_test, y_train, y_test, tokenizer):
+
+    train_set = PhemeDataset(X_train, y_train, tokenizer)
+    test_set = PhemeDataset(X_test, y_test, tokenizer)
+
+    
+    return train_set, test_set
+
+
+def build_iter(train_set, test_set, batch_size):
+    train_iter = DataLoader(train_set,
+                            batch_size = batch_size, 
+                            shuffle = True,
+                            num_workers = 4)
+
+    test_iter = DataLoader(test_set,
+                           batch_size = batch_size,
+                           shuffle = True,
+                           num_workers = 4)
+    
+    return train_iter, test_iter

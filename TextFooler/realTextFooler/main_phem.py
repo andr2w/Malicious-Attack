@@ -10,7 +10,7 @@ def main():
     print('Train Dataset:', len(X_train))
     print('Test Dataset:', len(X_test))
 
-    train_set, test_set = build_vocab(X_train, X_test, y_train, y_test, config.tokenizer, config.train_size)
+    train_set, test_set = build_vocab(X_train, X_test, y_train, y_test, config.tokenizer)
     train_iter, test_iter = build_iter(train_set, test_set, config.batch_size)
     
     net = Model(config).to(device=config.device)
