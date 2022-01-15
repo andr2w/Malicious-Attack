@@ -43,6 +43,9 @@ def train(train_iter, net, optimizer, loss_function, config, debug=True):
                 ids = torch.LongTensor(data['ids']).to(device=config.device)
                 mask = torch.LongTensor(data['mask']).to(device=config.device)
                 y = torch.LongTensor(data['y']).squeeze(1).to(device=config.device)
+                # [batch_size, 1]
+                # [batch_size]
+
 
                 y_hat = net(ids, mask)
                 loss = loss_function(y_hat, y)
