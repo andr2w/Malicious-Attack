@@ -3,3 +3,6 @@ TextFooler/model.ckpt
 .ipynb_checkpoints
 
 *.ckpt
+
+*.txt
+*.npy

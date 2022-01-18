@@ -1,6 +1,9 @@
+import enum
 import torch
 from tqdm import tqdm
 import util as ut
+
+
 
 
 def train(train_iter, net, optimizer, loss_function, config, debug=True):
